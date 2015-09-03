@@ -1,0 +1,1 @@
+resources :closure_rules, :only => [:index, :destroy, :create]

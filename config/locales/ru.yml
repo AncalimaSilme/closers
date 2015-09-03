@@ -1,0 +1,19 @@
+# English strings go here for Rails i18n
+ru:
+    closure_rule:
+        id: ID
+        projects: Проекты
+        trackers: Трекеры
+        statuses: Статусы
+        idle_time: Время бездействия (в часах)
+        close_status: Закрывать задачу статусом
+        actions: Действия
+
+    closure_rules_page_title: Правила для поиска старых задач
+    create_closure_rule: Создать правило
+
+
+
+
+
+        

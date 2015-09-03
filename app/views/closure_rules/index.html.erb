@@ -1,0 +1,85 @@
+<h2><%= l('closure_rules_page_title') %></h2>
+
+<fieldset>
+  <legend><%= l('create_closure_rule') %></legend>
+
+  <%= form_for :closure_rule  do |form| %>
+    <table>
+      <thead>
+        <tr>
+          <th><%= l('closure_rule.projects') %></th>
+          <th><%= l('closure_rule.trackers') %></th>
+          <th><%= l('closure_rule.statuses') %></th>
+          <th><%= l('closure_rule.idle_time') %></th>
+          <th><%= l('closure_rule.close_status') %></th>
+          <th><%= l('closure_rule.actions') %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><%= form.select :projects, Project.all.map { |p| [p.name, p.id] }, {}, { include_blank: false, multiple: true } %></td>
+          <td><%= form.select :trackers, Tracker.all.to_a.map { |t| [t.name, t.id] }, {}, { include_blank: false, multiple: true } %></td>
+          <td><%= form.select :statuses, IssueStatus.all.to_a.map { |is| [is.name, is.id] }, {}, { include_blank: false, multiple: true } %></td>
+          <td><%= form.number_field :idle_time %></td>
+          <td><%= form.select :close_status_id, IssueStatus.all.to_a.map { |is| [is.name, is.id] }, { include_blank: false } %></td>
+          <td><%= form.submit l('create') %></td>
+        </tr>
+      </tbody>
+    </table>
+  <% end %>
+
+</fieldset>
+
+<br/>
+
+<table class="list">
+  <thead>
+      <th><%= l('closure_rule.id') %></th>
+      <th><%= l('closure_rule.projects') %></th>
+      <th><%= l('closure_rule.trackers') %></th>
+      <th><%= l('closure_rule.statuses') %></th>
+      <th><%= l('closure_rule.idle_time') %></th>
+      <th><%= l('closure_rule.close_status') %></th>
+      <th><%= l('closure_rule.actions') %></th>
+  </thead>
+  <tbody>
+  <% if !@closure_rules.blank? %>
+      <% @closure_rules.each do |rule| %>
+          <tr>
+            <td><%= rule.id %></td>
+            <td>
+              <% rule.projects.each do |project_id| %>
+                <% unless project_id.blank? %>
+                  <% project = Project.find_by_id project_id %>
+                  <%= link_to(project, project_path(project.identifier)) %><% if project_id != rule.projects.last %>,<% end %>
+                <% end %>
+              <% end %>
+            </td>
+            <td>
+              <% rule.trackers.each do |tracker_id| %>
+                <% unless tracker_id.blank? %>
+                  <%= Tracker.find_by_id tracker_id %><% if tracker_id != rule.trackers.last %>,<% end %>
+                <% end %>
+              <% end %>
+            </td>
+            <td>
+              <% rule.statuses.each do |status_id| %>
+                <% unless status_id.blank? %>
+                  <%= IssueStatus.find_by_id(status_id).name %><% if status_id != rule.statuses.last %>,<% end %>
+                <% end %>
+              <% end %>
+            </td>
+            <td><%= rule.idle_time %></td>
+            <td><%= IssueStatus.find_by_id(rule.close_status_id).name if rule.close_status_id %></td>
+            <td><%= link_to(l(:button_delete), closure_rule_path(rule), :method => :delete, :class => 'icon icon-del') %></td>
+          </tr>
+      <% end %>
+  <% else %>
+      <tr><td colspan="7"><%= l(:label_no_data) %></td></tr>
+  <% end %>
+  </tbody>
+</table>
+
+<!-- TODO:
+  - Контрол для ввода времени
+ -->
