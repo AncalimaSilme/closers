@@ -3,8 +3,8 @@
 <fieldset>
   <legend><%= l('create_closure_rule') %></legend>
 
-  <%= form_for :closure_rule  do |form| %>
-    <table>
+  <%= form_for :closure_rule, html: { class: "closure-rule-form" }  do |form| %>
+    <table class="list">
       <thead>
         <tr>
           <th><%= l('closure_rule.projects') %></th>
@@ -21,18 +21,24 @@
           <td><%= form.select :trackers, Tracker.all.to_a.map { |t| [t.name, t.id] }, {}, { include_blank: false, multiple: true } %></td>
           <td><%= form.select :statuses, IssueStatus.all.to_a.map { |is| [is.name, is.id] }, {}, { include_blank: false, multiple: true } %></td>
           <td><%= form.number_field :idle_time %></td>
-          <td><%= form.select :close_status_id, IssueStatus.all.to_a.map { |is| [is.name, is.id] }, { include_blank: false } %></td>
+          <td><%= form.select :close_status_id, IssueStatus.where(is_closed: true).to_a.map { |is| [is.name, is.id] }, { include_blank: false } %></td>
           <td><%= form.submit l('create') %></td>
         </tr>
       </tbody>
     </table>
   <% end %>
 
+  <style type="text/css">
+    .closure-rule-form table select[multiple="multiple"] {
+        width: 100%;
+    }
+  </style>
+
 </fieldset>
 
 <br/>
 
-<table class="list">
+<table class="list closure-rules">
   <thead>
       <th><%= l('closure_rule.id') %></th>
       <th><%= l('closure_rule.projects') %></th>

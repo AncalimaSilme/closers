@@ -9,4 +9,6 @@ Redmine::Plugin.register :closers do
 
 
   menu :admin_menu, :closure_rules, { :controller => 'closure_rules', :action => 'index' }, :caption => :closure_rules_page_title
+
+  settings  :partial => 'settings/closers_settings', :default => {'empty' => true}
 end

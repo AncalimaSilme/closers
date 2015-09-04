@@ -1,24 +1,6 @@
-<fieldset>
-    <legend><%= l('closers.view_issues') %></legend>
-
-    <p>
-        <label for="settings_viewable_statuses"><%= l('closers.viewable_statuses') %></label>
-        <%= select_tag('settings[viewable_statuses]',
-           options_for_select(IssueStatus.order(:id).map { |status| [status.name, status.id] }, @settings['viewable_statuses']),
-           { include_blank: true, multiple: true }) %>
-    </p>
-
-    <p>
-        <label for="settings_closed_status"><%= l('closers.closed_status') %></label>
-        <%= select_tag('settings[closed_status]',
-           options_for_select(IssueStatus.order(:id).map { |status| [status.name, status.id] }, @settings['closed_status']),
-           { include_blank: true }) %>
-    </p>
-</fieldset>
-
-
-<p>
-    <label for="settings_hour"><%= l('closers.idle_time') %></label>
-    <%= number_field_tag 'settings[idle_time]', @settings['idle_time']  %>
-    <!-- TODO: сделать всплывающую форму для упрощения ввода дней и месяцев -->
+<p>   
+    <label for="settings_user_id"><%= l('closers_settings.user') %></label>
+    <%= select_tag('settings[user_id]',
+                   options_for_select(User.where(:type => 'User', :admin => true).order(:firstname, :lastname).map { |u| [u.firstname + ' ' + u.lastname, u.id] }, @settings['user_id']), { include_blank: true }) %>
+    <em class="info"><%= l('closers_settings.user_hint') %></em>
 </p>

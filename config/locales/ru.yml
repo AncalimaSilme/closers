@@ -1,5 +1,9 @@
 # English strings go here for Rails i18n
 ru:
+    closers_settings:
+        user: Пользователь
+        user_hint: От имени какого пользователя будут производиться действия
+
     closure_rule:
         id: ID
         projects: Проекты
