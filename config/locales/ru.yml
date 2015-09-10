@@ -1,4 +1,4 @@
-# English strings go here for Rails i18n
+# Russion strings go here for Rails i18n
 ru:
     closers_settings:
         user: Пользователь
@@ -9,7 +9,9 @@ ru:
         projects: Проекты
         trackers: Трекеры
         statuses: Статусы
+        active: Активно
         idle_time: Время бездействия (в часах)
+        after_on: После назначенной даты
         close_status: Закрывать задачу статусом
         actions: Действия
 

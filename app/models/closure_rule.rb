@@ -3,7 +3,9 @@ class ClosureRule < ActiveRecord::Base
     serialize :trackers, Array
     serialize :statuses, Array
     
-    validates_presence_of :projects, :trackers, :statuses, :idle_time, :close_status_id
+    validates_presence_of :projects, :trackers, :statuses, :close_status_id
+    validates :idle_time, :numericality => { :greater_than_or_equal_to => 0, :allow_nil => true, :message => :invalid }
+    validates :after_on, :date => true
 
     before_save :delete_empty_items
 

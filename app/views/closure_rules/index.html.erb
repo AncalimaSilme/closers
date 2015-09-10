@@ -1,40 +1,62 @@
 <h2><%= l('closure_rules_page_title') %></h2>
 
-<fieldset>
-  <legend><%= l('create_closure_rule') %></legend>
+<%= form_for :closure_rule, html: { class: "closure-rule-form" }  do |form| %>
 
-  <%= form_for :closure_rule, html: { class: "closure-rule-form" }  do |form| %>
-    <table class="list">
-      <thead>
-        <tr>
-          <th><%= l('closure_rule.projects') %></th>
-          <th><%= l('closure_rule.trackers') %></th>
-          <th><%= l('closure_rule.statuses') %></th>
-          <th><%= l('closure_rule.idle_time') %></th>
-          <th><%= l('closure_rule.close_status') %></th>
-          <th><%= l('closure_rule.actions') %></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><%= form.select :projects, Project.all.map { |p| [p.name, p.id] }, {}, { include_blank: false, multiple: true } %></td>
-          <td><%= form.select :trackers, Tracker.all.to_a.map { |t| [t.name, t.id] }, {}, { include_blank: false, multiple: true } %></td>
-          <td><%= form.select :statuses, IssueStatus.all.to_a.map { |is| [is.name, is.id] }, {}, { include_blank: false, multiple: true } %></td>
-          <td><%= form.number_field :idle_time %></td>
-          <td><%= form.select :close_status_id, IssueStatus.where(is_closed: true).to_a.map { |is| [is.name, is.id] }, { include_blank: false } %></td>
-          <td><%= form.submit l('create') %></td>
-        </tr>
-      </tbody>
-    </table>
-  <% end %>
+  <div class="box">
+    <fieldset class="box tabular">
+      <legend><%= l('create_closure_rule') %></legend>
 
-  <style type="text/css">
-    .closure-rule-form table select[multiple="multiple"] {
-        width: 100%;
-    }
-  </style>
+      <div class="splitcontent">
+        <div class="splitcontentleft">
+          <p>
+            <label><%= l('closure_rule.projects') %><span class="required"> *</span></label>
+            <%= form.select :projects, Project.all.map { |p| [p.name, p.id] }, {}, { include_blank: false, multiple: true, required: true } %> 
+          </p>
 
-</fieldset>
+          <p>
+            <label><%= l('closure_rule.trackers') %><span class="required"> *</span></label>
+            <%= form.select :trackers, Tracker.all.to_a.map { |t| [t.name, t.id] }, {}, { include_blank: false, multiple: true, required: true } %>
+          </p>
+          
+          <p>
+            <label><%= l('closure_rule.statuses') %><span class="required"> *</span></label>
+            <%= form.select :statuses, IssueStatus.all.to_a.map { |is| [is.name, is.id] }, {}, { include_blank: false, multiple: true, required: true } %>
+          </p>
+        </div>
+
+        <div class="splitcontentright">
+          <fieldset class="tabular">
+            <legend>Time<span class="required"> *</span></legend>
+
+            <p>
+              <label><%= l('closure_rule.after_on') %></label>
+              <%= form.text_field :after_on, :size => 10 %>
+              <%= calendar_for "closure_rule_after_on" %>
+            </p>
+            
+            <p>
+              <label><%= l('closure_rule.idle_time') %></label>
+              <%= form.text_field :idle_time, :size => 6 %>
+            </p>            
+          </fieldset>
+         
+          <p>
+            <label><%= l('closure_rule.close_status') %><span class="required"> *</span></label>
+            <%= form.select :close_status_id, IssueStatus.where(is_closed: true).to_a.map { |is| [is.name, is.id] }, { include_blank: false, required: true } %>
+          </p>
+
+          <p>
+            <label><%= l('closure_rule.active') %></label>
+            <%= form.check_box :active %>
+          </p>
+        </div>
+      </div>
+    </fieldset>
+
+    <%= form.submit l('create') %>
+  </div>
+
+<% end %>
 
 <br/>
 
@@ -44,8 +66,10 @@
       <th><%= l('closure_rule.projects') %></th>
       <th><%= l('closure_rule.trackers') %></th>
       <th><%= l('closure_rule.statuses') %></th>
+      <th><%= l('closure_rule.after_on') %></th>
       <th><%= l('closure_rule.idle_time') %></th>
       <th><%= l('closure_rule.close_status') %></th>
+      <th><%= l('closure_rule.active') %></th>
       <th><%= l('closure_rule.actions') %></th>
   </thead>
   <tbody>
@@ -75,13 +99,17 @@
                 <% end %>
               <% end %>
             </td>
-            <td><%= rule.idle_time %></td>
+            <td><%= rule.after_on.strftime "%d/%m/%Y %H:%M" if rule.after_on %></td>
+            <td>
+              <%= l_hours rule.idle_time if rule.idle_time %>
+            </td>
             <td><%= IssueStatus.find_by_id(rule.close_status_id).name if rule.close_status_id %></td>
+            <td><%= rule.active ? l(:general_text_Yes) : l(:general_text_No) %></td>
             <td><%= link_to(l(:button_delete), closure_rule_path(rule), :method => :delete, :class => 'icon icon-del') %></td>
           </tr>
       <% end %>
   <% else %>
-      <tr><td colspan="7"><%= l(:label_no_data) %></td></tr>
+      <tr><td colspan="9"><%= l(:label_no_data) %></td></tr>
   <% end %>
   </tbody>
 </table>
