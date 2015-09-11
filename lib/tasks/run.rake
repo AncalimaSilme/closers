@@ -14,14 +14,14 @@ namespace :redmine do
 
         if settings && user
             if !ClosureRule.all.empty?
-                ClosureRule.all.each do |rule|
+                ClosureRule.where(active: true).each do |rule|
                     puts "Rule ##{rule.id}"
                     puts "----------------"
 
                     date = rule.after_on ? Time.zone.local(rule.after_on.year.to_i, rule.after_on.month.to_i, rule.after_on.day.to_i) : Time.zone.now
-                    date = date - (idle_time * 3600) if idle_time
+                    date = date - (rule.idle_time * 3600) if rule.idle_time
                     
-                    Issue.where(project_id: rule.projects, tracker_id: rule.trackers, status_id: rule.statuses, active: true).where("updated_on < '#{date}'").each do |issue|
+                    Issue.where(project_id: rule.projects, tracker_id: rule.trackers, status_id: rule.statuses).where("updated_on < '#{date}'").each do |issue|
                         old_status_id = issue.status_id
 
                         if issue.update_attribute :status_id, rule.close_status_id

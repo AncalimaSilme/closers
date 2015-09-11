@@ -4,7 +4,8 @@ class ClosureRulesController < ApplicationController
   layout 'admin'
 
   def index
-    @closure_rules = ClosureRule.all
+    @closure_rule = ClosureRule.new
+    @closure_rules = ClosureRule.order("active DESC, id ASC")
   end
 
   def create
@@ -26,6 +27,12 @@ class ClosureRulesController < ApplicationController
       flash[:error] = l("errors.failure_delete_closure_rule")
     end
 
+    redirect_to closure_rules_path
+  end
+
+  def activate
+    @closure_rule = ClosureRule.find(params[:closure_rule_id])
+    @closure_rule.update_attribute :active, !@closure_rule.active
     redirect_to closure_rules_path
   end
 end

@@ -5,9 +5,11 @@ class ClosureRules < ActiveRecord::Migration
       t.text    :trackers,          null: false
       t.text    :statuses,          null: false
 
-      t.integer :idle_time,         null: false
+      t.date    :after_on
+      t.integer :idle_time
       t.integer :close_status_id,   null: false
-      
+      t.boolean :active
+
       t.timestamps
     end
   end

@@ -13,13 +13,15 @@ ru:
         idle_time: Время бездействия (в часах)
         after_on: После назначенной даты
         close_status: Закрывать задачу статусом
+        activate: Включить
+        deactivate: Отключить
         actions: Действия
 
     closure_rules_page_title: Правила для поиска старых задач
     create_closure_rule: Создать правило
 
-
-
-
+    errors:
+        failure_create_closure_rule: Не удалось создать правило
+        failure_delete_closure_rule: Не удалось удалить правило
 
         

@@ -1,6 +1,6 @@
 <h2><%= l('closure_rules_page_title') %></h2>
 
-<%= form_for :closure_rule, html: { class: "closure-rule-form" }  do |form| %>
+<%= form_for @closure_rule, html: { class: "closure-rule-form" }  do |form| %>
 
   <div class="box">
     <fieldset class="box tabular">
@@ -99,13 +99,16 @@
                 <% end %>
               <% end %>
             </td>
-            <td><%= rule.after_on.strftime "%d/%m/%Y %H:%M" if rule.after_on %></td>
+            <td><%= rule.after_on.strftime "%d/%m/%Y" if rule.after_on %></td>
             <td>
               <%= l_hours rule.idle_time if rule.idle_time %>
             </td>
             <td><%= IssueStatus.find_by_id(rule.close_status_id).name if rule.close_status_id %></td>
             <td><%= rule.active ? l(:general_text_Yes) : l(:general_text_No) %></td>
-            <td><%= link_to(l(:button_delete), closure_rule_path(rule), :method => :delete, :class => 'icon icon-del') %></td>
+            <td>
+              <%= link_to l("closure_rule.#{rule.active ? 'deactivate' : 'activate'}"), closure_rule_activate_path(rule), method: :post %>
+              <%= link_to l(:button_delete), closure_rule_path(rule), method: :delete %>
+            </td>
           </tr>
       <% end %>
   <% else %>
@@ -113,7 +116,3 @@
   <% end %>
   </tbody>
 </table>
-
-<!-- TODO:
-  - Контрол для ввода времени
- -->
