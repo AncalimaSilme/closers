@@ -4,7 +4,7 @@ Redmine::Plugin.register :closers do
   name 'Closers plugin'
   author 'Alexander Kazachkin'
   description 'This is a plugin for Redmine. It is help you close old issues'
-  version '0.0.1'
+  version '0.0.2'
   url 'https://github.com/AncalimaSilme/closers'
 
 
