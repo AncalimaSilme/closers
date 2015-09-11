@@ -107,6 +107,7 @@
             <td><%= rule.active ? l(:general_text_Yes) : l(:general_text_No) %></td>
             <td>
               <%= link_to l("closure_rule.#{rule.active ? 'deactivate' : 'activate'}"), closure_rule_activate_path(rule), method: :post %>
+              <%= link_to l("closure_rule.apply"), closure_rule_apply_path(rule), method: :post %>
               <%= link_to l(:button_delete), closure_rule_path(rule), method: :delete %>
             </td>
           </tr>

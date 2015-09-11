@@ -1,5 +1,8 @@
 # coding: utf-8
 
+require 'rake'
+RedmineApp::Application.load_tasks
+
 class ClosureRulesController < ApplicationController
   layout 'admin'
 
@@ -30,9 +33,25 @@ class ClosureRulesController < ApplicationController
     redirect_to closure_rules_path
   end
 
+
+  # CUSTOM ACTION
+
   def activate
     @closure_rule = ClosureRule.find(params[:closure_rule_id])
     @closure_rule.update_attribute :active, !@closure_rule.active
+    redirect_to closure_rules_path
+  end
+
+  def apply
+    if params[:closure_rule_id]
+      if Rake::Task["redmine:plugin:closers:run"].invoke(params[:closure_rule_id])
+        flash[:notice] = l("success.apply_closure_rule")
+      else
+        flash[:error] = l("errors.failure_apply_closure_rule")
+      end
+    end
+    
+    Rake::Task["redmine:plugin:closers:run"].reenable
     redirect_to closure_rules_path
   end
 end

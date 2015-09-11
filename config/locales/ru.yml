@@ -15,6 +15,7 @@ ru:
         close_status: Закрывать задачу статусом
         activate: Включить
         deactivate: Отключить
+        apply: Применить
         actions: Действия
 
     closure_rules_page_title: Правила для поиска старых задач
@@ -23,5 +24,9 @@ ru:
     errors:
         failure_create_closure_rule: Не удалось создать правило
         failure_delete_closure_rule: Не удалось удалить правило
+        failure_apply_closure_rule: Не удалось применить правило
+
+    success:
+        apply_closure_rule: Правило успешно применено
 
         
