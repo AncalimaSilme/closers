@@ -10,31 +10,31 @@ namespace :redmine do
         puts "Start at #{Time.now}"
 
         settings = Setting.find_by_name('plugin_closers').value if Setting.find_by_name('plugin_closers')
+        user = User.find_by_id settings[:user_id]
 
-        if settings && settings[:user_id]
-            ClosureRule.all.each do |rule|
-                puts "Rule ##{rule.id}"
-                puts "----------------"
+        if settings && user
+            if !ClosureRule.all.empty?
+                ClosureRule.all.each do |rule|
+                    puts "Rule ##{rule.id}"
+                    puts "----------------"
 
-                Issue.where(project_id: rule.projects, tracker_id: rule.trackers, status_id: rule.statuses).each do |issue|
-                    if issue.updated_on < (Time.zone.now - (rule.idle_time * 3600))
-                        puts "Issue ##{issue.id} corresponds to the rule ##{rule.id}"
-                        
-                        if User.find_by_id settings[:user_id]
-                            old_status_id = issue.status_id
+                    date = rule.after_on ? Time.zone.local(rule.after_on.year.to_i, rule.after_on.month.to_i, rule.after_on.day.to_i) : Time.zone.now
+                    date = date - (idle_time * 3600) if idle_time
+                    
+                    Issue.where(project_id: rule.projects, tracker_id: rule.trackers, status_id: rule.statuses, active: true).where("updated_on < '#{date}'").each do |issue|
+                        old_status_id = issue.status_id
 
-                            if issue.update_attribute :status_id, rule.close_status_id
-                                journal = issue.init_journal User.find_by_id settings[:user_id]
-                                if journal.save!
-                                    journal.details.create! property: "attr", prop_key: "status_id", old_value: old_status_id, value: issue.status_id
-                                    puts "Issue ##{issue.id} was closed"
-                                end
+                        if issue.update_attribute :status_id, rule.close_status_id
+                            journal = issue.init_journal user
+                            if journal.save!
+                                journal.details.create! property: "attr", prop_key: "status_id", old_value: old_status_id, value: issue.status_id
+                                puts "Issue ##{issue.id} was closed"
                             end
-                        else
-                            puts "Not found user by user_id: #{settings[:user_id]}"
                         end
                     end
                 end
+            else
+                puts "You have no closure rules for issues"
             end
         else
             puts "Not found settings for plugin"
